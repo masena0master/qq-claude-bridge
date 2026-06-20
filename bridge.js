@@ -205,6 +205,7 @@ Write-Output '${filepath.replace(/\\/g, '\\\\')}'
     const proc = spawn('powershell', ['-NoProfile', '-Command', psScript], {
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 15000,
+      windowsHide: true,
     });
 
     let stdout = '', stderr = '';
@@ -270,6 +271,7 @@ function callClaude(prompt, sessionId) {
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: claudeConfig.timeout_seconds * 1000,
       env: { ...process.env },
+      windowsHide: true,
     });
 
     let stdout = '';
