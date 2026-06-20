@@ -34,7 +34,7 @@
 ### 1. 下载本项目
 
 ```bash
-git clone <仓库地址>   # 或直接下载解压
+git clone https://github.com/masena0master/qq-claude-bridge.git
 cd qq-claude-bridge
 npm install
 ```
@@ -63,23 +63,27 @@ claude:
 ### 3. 安装 NapCatQQ
 
 1. 下载 NapCatQQ Windows 一键包（Shell 版本）
-2. 解压到任意目录
+2. 解压到桌面 `napcat` 文件夹
 3. 启动 NapCat，用手机 QQ 扫码登录
 4. 浏览器打开 `http://127.0.0.1:6099/webui`
-   - 登录密码在 NapCat 启动时控制台会显示
-   - 或查看 `napcat/config/webui.json` 中的 `token` 字段
-5. **网络配置 → 添加 → WebSocket 客户端（反向）**
-   - URL: `ws://127.0.0.1:8080`
-   - 消息格式: `Array`
-   - 保存
+   - 登录密码查看 `napcat/config/webui.json` 中的 `token` 字段
+5. 开启 OneBot v11 服务（启动器会自动处理，无需手动配置 WS）
 
 ### 4. 启动
 
 ```bash
-npm start        # 或双击 start-all.bat
+node launcher.js              # 一键启动（推荐）
+# 或双击 QQ-Claude.bat
 ```
 
-看到 `NapCatQQ 已连接` 就成功了。然后用手机 QQ 给 NapCat 登录的号发消息即可。
+启动器会自动：
+- 检测环境并修复配置
+- 清理旧进程
+- 启动桥接服务和 NapCat
+- 通过 API 启用 OneBot
+- 等待 WebSocket 连接就绪
+
+看到 `🎉 QQ-Claude Bridge 已完全启动！` 就成功了。
 
 ## 使用命令
 
@@ -89,30 +93,41 @@ npm start        # 或双击 start-all.bat
 | `/new` | 清空记忆，开始新会话 |
 | `/status` | 查看服务运行状态 |
 | `/help` | 显示帮助 |
+| `/screen` 或 `截屏` | 截取桌面屏幕 |
+| 发送图片 | Claude 会分析图片内容 |
+
+## launcher.js 命令
+
+```bash
+node launcher.js              # 一键启动
+node launcher.js --stop       # 停止所有服务
+node launcher.js --status     # 查看运行状态
+```
 
 ## 文件说明
 
 ```
 qq-claude-bridge/
-├── bridge.js              # 核心桥接服务
-├── config.yaml            # 你的配置（已包含个人信息，不要分享）
-├── config.example.yaml    # 配置模板（可安全分享）
-├── package.json           # Node.js 项目文件
-├── start-all.bat          # 一键启动（Windows）
-├── stop-all.bat           # 一键停止（Windows）
-├── create-shortcut.vbs    # 创建桌面快捷方式
-└── README.md              # 本文件
+├── launcher.js             # 一键启动器 (v2.0)
+├── bridge.js               # 核心桥接服务
+├── config.yaml             # 你的配置（不要分享）
+├── config.example.yaml     # 配置模板（可安全分享）
+├── package.json            # Node.js 项目文件
+├── QQ-Claude.bat           # 启动快捷脚本
+├── stop-all.bat            # 停止所有服务
+├── create-shortcut.vbs     # 创建桌面快捷方式
+└── README.md               # 本文件
 ```
 
 ## 故障排查
 
 | 问题 | 解决 |
 |------|------|
-| 消息没反应 | 检查 NapCat WebUI 中 WS 连接 URL 是否为 `ws://127.0.0.1:8080` |
+| 消息没反应 | 检查 NapCat WebUI 中 OneBot v11 是否已开启 |
 | Claude 启动失败 | `config.yaml` 中 `claude.binary` 改成绝对路径 |
-| 回复两遍 | 正常现象，已有去重，不影响使用 |
 | NapCat 扫码失败 | 换小号试试，或用密码登录 |
-| 端口被占用 | 修改 `config.yaml` 中 `bridge.port` 和 NapCat 中对应的 WS URL |
+| 端口被占用 | 启动器会自动清理旧进程，或运行 `launcher.js --stop` |
+| 启动后未连接 | 打开 `http://127.0.0.1:6099/webui/setting/protocol` 手动开启 OneBot |
 
 ## 安全提示
 
