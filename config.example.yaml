@@ -1,0 +1,46 @@
+# QQ-Claude Bridge 配置文件
+#
+# 使用方法：复制此文件为 config.yaml，然后修改下面的内容
+#   cp config.example.yaml config.yaml
+#
+# 必填项：
+#   1. security.allowed_users - 你的 QQ 号
+#   2. claude.binary - Claude Code 可执行文件路径（默认 claude 即可，如果后台运行找不到则用绝对路径）
+
+bridge:
+  host: "127.0.0.1"       # 监听地址（一般不用改）
+  port: 8080               # 监听端口（一般不用改）
+
+security:
+  # ★ 必填：QQ 用户白名单 - 填入你有权使用的 QQ 号
+  # 支持多个用户，一行一个
+  allowed_users:
+    - 你的QQ号           # ← 改成你的 QQ 号
+
+  rate_limit:
+    max_requests: 30       # 窗口内最大请求数
+    window_seconds: 60     # 滑动窗口秒数
+
+claude:
+  # Claude Code 可执行文件
+  # 如果命令行可以直接运行 claude，填 "claude" 即可
+  # 如果后台运行找不到，需要填完整路径，如：
+  #   Windows: C:/Users/用户名/AppData/Roaming/npm/claude.cmd
+  #   或运行 `where claude` 查看路径
+  binary: claude
+
+  max_turns: 10            # 单次对话最大轮数
+  max_budget_usd: 0.50     # 单次对话最大花费（美元）
+  timeout_seconds: 120     # 单次请求超时秒数
+  allowed_tools:           # Claude 允许使用的工具
+    - Read
+    - Write
+    - Bash
+    - Glob
+    - Grep
+    - WebSearch
+    - WebFetch
+
+features:
+  streaming_reply: true
+  session_timeout_minutes: 30    # 会话过期时间（分钟）

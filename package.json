@@ -1,0 +1,18 @@
+{
+  "name": "qq-claude-bridge",
+  "version": "1.0.0",
+  "description": "通过手机 QQ 远程操控桌面上的 Claude Code，像聊天一样与 Claude 对话",
+  "main": "bridge.js",
+  "scripts": {
+    "start": "node bridge.js",
+    "dev": "node --watch bridge.js"
+  },
+  "keywords": ["qq", "claude", "bot", "bridge", "onebot"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "js-yaml": "^4.2.0",
+    "ws": "^8.21.0"
+  }
+}

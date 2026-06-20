@@ -1,0 +1,17 @@
+# 个人配置文件（包含 QQ 号，不要上传）
+config.yaml
+
+# Node.js
+node_modules/
+
+# 截图和图片缓存
+images/
+*.png
+*.jpg
+
+# 安装标记
+.installed
+
+# 系统文件
+Thumbs.db
+.DS_Store
