@@ -446,18 +446,17 @@ class MessageHandler {
       return;
     }
 
-    // 3. 消息包含"截屏" → 桥接先截图，然后传给 Claude 分析
+    // 3. 消息包含"截屏" → 只发截图，不经过 Claude
     if (rawMessage.includes('截屏') && imagePaths.length === 0 && !rawMessage.startsWith('/')) {
       const shot = await takeScreenshot();
       if (shot.success) {
-        await sendImage(ws, targetType, targetId, shot.path, '📸 当前屏幕');
-        // 把截图路径加入提示，让 Claude 分析
-        promptText = `用户发来一张截图，请用 Read 工具查看: "${shot.path}"\n用户说: ${rawMessage}`;
+        await sendImage(ws, targetType, targetId, shot.path, '📸');
       }
+      return;
     }
 
     // 4. 特殊命令（直接处理，不经过 Claude）
-    const isCommand = rawMessage.startsWith('/') || rawMessage === '截屏';
+    const isCommand = rawMessage.startsWith('/');
     if (isCommand && imagePaths.length === 0) {
       await this.handleCommand(rawMessage, userId, targetType, targetId, ws);
       return;
@@ -495,12 +494,10 @@ class MessageHandler {
       }
 
       case '/screen':
-      case '/screenshot':
-      case '截屏': {
-        await sendMessage(ws, targetType, targetId, '📸 正在截屏...');
+      case '/screenshot': {
         const shot = await takeScreenshot();
         if (shot.success) {
-          await sendImage(ws, targetType, targetId, shot.path, `✅ 截图 (${(shot.size / 1024).toFixed(0)}KB)`);
+          await sendImage(ws, targetType, targetId, shot.path, '📸');
           console.log(`[截图] 已发送: ${shot.path} (${shot.size}字节)`);
         } else {
           await sendMessage(ws, targetType, targetId, `❌ 截图失败: ${shot.error}`);
